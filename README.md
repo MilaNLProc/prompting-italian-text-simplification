@@ -13,7 +13,11 @@ pip install -r requirements.txt
 
 ## Run the Simplification
 
-Execute the following command from the root of this project to execute the simplification on Admin-It with Vicuna v1.3 13B. Edit the model name to use different models.
+Execute the following command from the root of this project to execute the simplification on Admin-It with Vicuna v1.3 13B.
+
+Notes:
+- edit the model name to use different models
+- you will likely need to change some of the parameters to adapt to your setup
 
 ```bash
 ./bash/simplify_with_model.sh "lmsys/vicuna-13b-v1.3" "admin-It"

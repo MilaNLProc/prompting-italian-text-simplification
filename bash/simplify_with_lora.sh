@@ -29,7 +29,7 @@ then
     exit 1
 fi
 
-python simplify.py \
+python src/simplify.py \
     --model_name_or_path ${BASE_MODEL} \
     --lora_weights ${LORA_WEIGHTS} \
     --dataset_name ${DATASET} \

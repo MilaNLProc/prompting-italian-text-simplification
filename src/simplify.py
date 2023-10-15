@@ -1,8 +1,10 @@
-from transformers import HfArgumentParser
-import pandas as pd
-from simple_generation import DefaultGenerationConfig, SimpleGenerator
-import os
 import dataclasses
+import os
+
+import pandas as pd
+import torch
+from simple_generation import DefaultGenerationConfig, SimpleGenerator
+from transformers import HfArgumentParser
 
 
 @dataclasses.dataclass
@@ -15,6 +17,7 @@ class MainArgs:
     load_in_8bit: bool = False
     load_in_4bit: bool = False
     prompt_template: int = 0
+    skip_prompt: bool = True
 
 
 def build_input(prompt_template, text):
@@ -45,12 +48,21 @@ def main():
     print("Sample of complex texts", texts[:2])
     print("Sample of simpl texts", simp_texts[:2])
 
+    if "vicuna" in args.model_name_or_path:
+        system_prompt = "vicuna_one_shot"
+    elif "Llama-2" in args.model_name_or_path:
+        system_prompt = "llama-2"
+    else:
+        system_prompt = None
+
     pipe = SimpleGenerator(
         model_name_or_path=args.model_name_or_path,
         tokenizer_name_or_path=args.tokenizer_name_or_path,
         lora_weights=args.lora_weights,
         load_in_8bit=args.load_in_8bit,
         load_in_4bit=args.load_in_4bit,
+        system_prompt=system_prompt,
+        torch_dtype=torch.bfloat16,
     )
 
     print("Building inputs with template")
@@ -60,8 +72,8 @@ def main():
     generated_texts = pipe(
         inputs,
         **dataclasses.asdict(gen_args),
-        return_full_text=False,
-        log_batch_sample=5,
+        skip_prompt=args.skip_prompt,
+        starting_batch_size=64,
     )
 
     print(generated_texts[:2])

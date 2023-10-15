@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=simplify
-#SBATCH --gpus=1
+#SBATCH --gpus=4
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=64000MB
@@ -28,10 +28,9 @@ then
     exit 1
 fi
 
-python simplify.py \
+python src/simplify.py \
     --model_name_or_path ${MODEL} \
     --dataset_name ${DATASET} \
-    --load_in_8bit="true" --load_in_4bit="false" \
     --output_dir ./data/answers/${DATASET}/${MODEL} \
     --do_sample="true" \
     --temperature="0.7" \
